@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "chalk": "^4.1.2",
+    "mysql": "^2.18.1",
     "validator": "^13.7.0",
     "yargs": "^17.5.1"
   }
