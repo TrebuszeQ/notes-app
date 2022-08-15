@@ -2,6 +2,7 @@ const validator = require('validator'),
 chalk = require('chalk'),
 yargs = require('yargs'),
 notesJS = require('./notes.js');
+const { argv } = require('yargs');
 
 // Customize yargs version
 yargs.version('1.1.0');
@@ -25,7 +26,6 @@ yargs.command({
         }
     },
     handler: function(argv) {
-        console.log(`argv test\n${chalk.red.bold(argv.noteTitle)};\n${chalk.red.bold(argv.noteBody)};\n`);
         notesJS.addNote(argv.noteTitle, argv.noteBody);
     }
 });
@@ -42,7 +42,7 @@ yargs.command({
         },
     },
     handler: function(argv) {
-        notesJS.removeNote(argv.noteTitle);
+        notesJS.removeNote2(argv.noteTitle);
     }
 })
 
@@ -52,6 +52,7 @@ yargs.command({
     describe: 'List notes',
     handler: function() {
         console.log('Listing out the notes.');
+        notesJS.listNotes();
     }
 })
 
@@ -59,15 +60,23 @@ yargs.command({
 yargs.command({
     command: 'read',
     describe: 'Read notes',
-    handler: function() {
+    builder: {
+        noteTitle: {
+            describe: 'Note title',
+            demandOption: true,
+            type: 'string',
+        },
+    },
+    handler: function(argv) {
         console.log('Reading the notes.');
+        notesJS.readNote(argv.noteTitle);
     }
 })
 
-for(let i = 0; i < process.argv.length; i++)
-{
-    console.log(`process.argv[${i}]: ${chalk.blue.bold(process.argv[i])}. \n`);
-}
+// for(let i = 0; i < process.argv.length; i++)
+// {
+//     console.log(`process.argv[${i}]: ${chalk.blue.bold(process.argv[i])}. \n`);
+// }
 
 
 yargs.parse();

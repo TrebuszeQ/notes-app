@@ -12,14 +12,14 @@ file = 'notes.json';
 const addNote = (title, body) => {
     const notes = loadNotes();
 
-    const duplicateNotes = notes.filter((indice) => {
-        return indice.title === title;
-    });
-    if( duplicateNotes.length === 0) {
+    const duplicateNote = notes.find( (indice) => indice.title === title);
+
+    if(duplicateNote === undefined) {
         notes.push({
             title: title,
             body: body,
         }); 
+        console.log(chalk.green('Note added.'))
     } else {
         console.warn(chalk.red('Note title taken!'));  
     }
@@ -34,23 +34,36 @@ const saveNotes = (notes) => {
     fs.writeFileSync(file, dataJson);
 }
 
-const removeNote = (title) => {
+// const removeNote = (title) => {
+//     const notes = loadNotes();
+
+//     const toRemove = notes.findIndex( (indice) => {
+//         return indice.title === title;
+//     });
+    
+//     if(toRemove != -1) {
+//         notes.splice(toRemove);
+//         saveNotes(notes);
+//         console.log('Note removed.');
+//         return;
+            
+//     } else {
+//         console.warn(chalk.red(`Note doesn't exist.`));
+//         return;
+//     }
+// }
+
+const removeNote2 = (title) => {
     const notes = loadNotes();
 
-    const toRemove = notes.findIndex( (indice) => {
-        return indice.title === title;
-    });
-    
-    if(toRemove != -1) {
-        notes.splice(toRemove);
-        saveNotes(notes);
-        console.log('Note removed.');
-        return;
-            
+    const filtered = notes.filter( (indice) => indice.title != title );
+    saveNotes(filtered);
+    if(notes.length === filtered.length) {
+        console.log(chalk.red('Notes remain unchanged.'));
     } else {
-        console.warn(chalk.red(`Note doesn't exist.`));
-        return;
-    }
+        console.log(chalk.green('Note removed.'));
+    };
+    return;
 }
 
 const loadNotes = () => {
@@ -64,8 +77,29 @@ const loadNotes = () => {
     }
 }
 
+const listNotes = () => {
+    const notes = loadNotes();
+    console.log(chalk.blue('Your notes:'));
+    
+    notes.forEach(element => console.log(element.title));
+}
+
+const readNote = (title) => {
+    const notes = loadNotes();
+    const note = notes.find((element) => element.title === title);
+
+    if(note != undefined) {
+        console.log(chalk.blue(`Note "${note.title}":\n${note.body}`));
+    } else {
+        console.log(chalk.red(`Note title doesn't exist.`));
+    }
+}
+ 
 module.exports = {
     // getNotes: getNotes,
     addNote: addNote,
-    removeNote: removeNote,
+    // removeNote: removeNote,
+    removeNote2: removeNote2,
+    listNotes: listNotes,
+    readNote: readNote,
 }
